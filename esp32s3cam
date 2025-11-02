@@ -1,0 +1,82 @@
+esphome:
+  name: camara-prueba
+  friendly_name: Cámara Prueba
+esp32:
+  board: esp32-s3-devkitc1-n16r8
+  framework:
+    type: esp-idf
+psram:
+  mode: octal
+  speed: 80MHz
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_key_cam
+
+ota:
+  - platform: esphome
+    password: !secret pass_ota_cam
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: True
+  power_save_mode: NONE
+ 
+mdns:
+  disabled: False  
+  
+captive_portal:
+# Configuración i2c  
+i2c:
+  - id: cam_i2c
+    sda: GPIO4
+    scl: GPIO5
+camera_encoder:
+  type: esp32_camera
+  quality: 70
+  buffer_size: 2097152
+# make sure to use the correct GPIO pins for your particular ESP32 model
+esp32_camera:
+  id: espcam
+  name: Cámara Prueba
+  external_clock:
+    pin: GPIO15
+    frequency: 20MHz
+  i2c_id: cam_i2c
+  data_pins: [GPIO11, GPIO9, GPIO8, GPIO10, GPIO12, GPIO18, GPIO17, GPIO16]
+  vsync_pin: GPIO6
+  href_pin: GPIO7
+  pixel_clock_pin: GPIO13
+  resolution: 1024X768 # my default
+  jpeg_quality: 10
+  max_framerate: 30fps
+  idle_framerate: 0.1fps
+  frame_buffer_count: 2
+  vertical_flip: false
+  horizontal_mirror: false
+  aec_mode: AUTO
+  aec2: True
+
+# Intensidad de la señal WiFi y Temperatura de la Cámara
+sensor:
+  - platform: wifi_signal
+    name: WiFi Signal Cámara Prueba
+    update_interval: 60s
+  - platform: internal_temperature
+    name: Internal Temperature Cámara Prueba
+
+# Configuración del servidor web
+esp32_camera_web_server:
+  - port: 80
+    mode: stream
+    
+# Botón para resetear el módulo
+switch:
+  - platform: restart
+    name: esp-cam restart
+  
