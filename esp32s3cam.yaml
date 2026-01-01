@@ -2,7 +2,8 @@ esphome:
   name: camara-prueba
   friendly_name: Cámara Prueba
 esp32:
-  board: esp32-s3-devkitc1-n16r8
+  variant: ESP32S3
+  flash_size: 16MB
   framework:
     type: esp-idf
 psram:
